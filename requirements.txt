@@ -1,0 +1,12 @@
+pandas
+numpy
+requests
+IPython
+python-dotenv
+networkx
+matplotlib
+streamlit
+fastapi
+pydantic
+python-louvain
+community
