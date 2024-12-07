@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import requests
+import time
 
 ########## Setup page
 st.set_page_config(layout="wide",page_title="Movie Recommendation System", page_icon=":alembic:")
@@ -31,20 +32,118 @@ def fetch_recommendations(user_id, algorithm):
         data = response.json()
         return data # Extract the list of recommended movies
     except requests.exceptions.RequestException as e:
-        st.error(f"Error fetching recommendations from API: {e}")
         return []
 
 ########## Sidebar
 image_path = "https://thumbs.dreamstime.com/b/movie-time-poster-vintage-cinema-film-projector-home-theater-retro-camera-vector-illustration-cinematography-entertainment-156230513.jpg"
-st.sidebar.image(image_path, use_column_width=True)
-st.sidebar.title('`Recommendation System`')
-st.sidebar.write("Chọn người dùng để xem các gợi ý phim:")
-selected_user = st.sidebar.selectbox("Người dùng:", users)
-selected_algo = st.sidebar.selectbox("Thuật toán:", ["Frequency", "Girvan Newman", "Louvain"])
+st.sidebar.image(image_path, use_container_width=True)
+st.sidebar.title('`Movie Recommendation System`')
+st.sidebar.write("Chọn người dùng để xem các gợi ý phim")
 
-########## Main page
-st.header(':kiwifruit: Movie Recommendation System')
-st.markdown("<hr>", unsafe_allow_html=True)
+# Quản lý trạng thái hiển thị form
+if "show_user_form" not in st.session_state:
+    st.session_state["show_user_form"] = False
+if "show_rating_form" not in st.session_state:
+    st.session_state["show_rating_form"] = False
+
+# Sidebar: Selectbox chọn người dùng
+selected_user = st.sidebar.selectbox("Người dùng:", users)
+
+import streamlit as st
+
+# Thêm mã CSS để nút chiếm toàn bộ chiều rộng
+st.markdown("""
+    <style>
+        .full-width-button button {
+            width: 100%;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Sidebar: Các nút Add User và Add Rating
+col1, col2 = st.sidebar.columns(2, gap="small")
+with col1:
+    with st.container():
+        st.markdown('<div class="full-width-button">', unsafe_allow_html=True)
+        if st.button("Add User", key="add_user_btn", help="Thêm người dùng"):
+            st.session_state["show_user_form"] = not st.session_state["show_user_form"]
+            st.session_state["show_rating_form"] = False  # Tắt form Add Rating nếu đang mở
+        st.markdown('</div>', unsafe_allow_html=True)
+
+with col2:
+    with st.container():
+        st.markdown('<div class="full-width-button">', unsafe_allow_html=True)
+        if st.button("Add Rating", key="add_rating_btn", help="Thêm đánh giá"):
+            st.session_state["show_rating_form"] = not st.session_state["show_rating_form"]
+            st.session_state["show_user_form"] = False  # Tắt form Add User nếu đang mở
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# Kiểm tra trạng thái `show_user_form`
+if st.session_state["show_user_form"]:
+    with st.sidebar.form(key="add_user_form", clear_on_submit=True):
+        # Nhập UserID mới
+        new_user_id = st.text_input("Nhập UserID mới:")
+        new_user_id = new_user_id.strip()  # Xóa khoảng trắng đầu/cuối chuỗi
+        if new_user_id and not new_user_id.startswith("U"):
+            new_user_id = f"U{new_user_id}"
+
+        # Nút xác nhận
+        submit_button = st.form_submit_button("Xác nhận")
+
+        if submit_button:
+            if new_user_id:
+                try:
+                    # Gửi yêu cầu tới API
+                    response = requests.post(f"{API_URL}/add_user", json={"userId": new_user_id})
+                    if response.status_code == 200:
+                        st.sidebar.success(f"Đã thêm người dùng mới: {new_user_id}")
+                        # Fetch lại danh sách users và cập nhật
+                        users = fetch_data("users")  # Đảm bảo `fetch_data` được định nghĩa
+                    else:
+                        st.sidebar.error(f"Không thể thêm người dùng: {response.json().get('detail', 'Lỗi không xác định')}")
+                except requests.exceptions.RequestException as e:
+                    st.sidebar.error(f"Lỗi kết nối tới API: {e}")
+            else:
+                st.sidebar.warning("Vui lòng nhập UserID hợp lệ.")
+
+# Kiểm tra trạng thái `show_rating_form`
+if st.session_state["show_rating_form"]:
+    with st.sidebar.form(key="add_rating_form", clear_on_submit=True):
+        # Nhập Movie ID (tmdbId) và Rating
+        movie_id = st.text_input("Nhập mã phim (tmdbId):", help="ID của phim trên TMDB.")
+        rating = st.number_input("Nhập đánh giá (rating):", min_value=0.5, max_value=5.0, step=0.5)
+
+        # Nút xác nhận
+        submit_button = st.form_submit_button("Xác nhận")
+
+        if submit_button:
+            if movie_id.isdigit() and 0 <= rating <= 5:
+                try:
+                    # Lấy timestamp hiện tại
+                    timestamp = int(time.time())
+
+                    # Gửi yêu cầu tới API
+                    payload = {
+                        "userId": selected_user,
+                        "tmdbId": int(movie_id),
+                        "rating": rating,
+                        "timestamp": timestamp
+                    }
+                    response = requests.post(f"{API_URL}/add_rating", json=payload)
+
+                    if response.status_code == 200:
+                        st.sidebar.success(f"Đã thêm đánh giá {rating} cho phim {movie_id} bởi user {selected_user} lúc {timestamp}")
+                    else:
+                        st.sidebar.error(f"Không thể thêm đánh giá: {response.json().get('detail', 'Lỗi không xác định')}")
+                except requests.exceptions.RequestException as e:
+                    st.sidebar.error(f"Lỗi kết nối tới API: {e}")
+            else:
+                st.sidebar.warning("Vui lòng nhập mã phim hợp lệ và rating trong khoảng 0-5.")
+
+
+
+
+selected_algo = st.sidebar.selectbox("Thuật toán:", ["Girvan Newman", "Louvain"])
 
 # Display movie
 def display_movie(recommendations):
@@ -165,7 +264,7 @@ if selected_user and selected_algo:
     recommendations = fetch_recommendations(selected_user, algo)
 
     if recommendations:
-        st.write(f"Recommended Movies for User {selected_user} using {selected_algo} algorithm:")
+        st.write(f"Recommended Movies for User {selected_user} using {selected_algo} algorithm")
         display_movie(recommendations)
     else:
         st.write("No recommendations available.")

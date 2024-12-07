@@ -40,6 +40,9 @@ def load_data():
     ratings_df = df[['userId', 'tmdbId', 'rating', 'timestamp']]
     ratings = ratings_df.to_dict(orient='records')
 
+    logger.info(f"Current numbers of users: {len(users)}")
+    logger.info(f"Current numbers of ratings: {len(ratings)}")
+
 def get_recommendations(ratings, algorithms):
     # Tạo đồ thị
     B = nx.Graph()
@@ -74,11 +77,11 @@ class Movie(BaseModel):
     homepage: str
 
 class User(BaseModel):
-    user_id: str
+    userId: str
 
 class Rating(BaseModel):
-    user_id: str
-    tmdb_id: int
+    userId: str
+    tmdbId: int
     rating: confloat(ge=0.5, le=5.0, multiple_of=0.5)
     timestamp: int
 
@@ -101,31 +104,39 @@ def get_users():
 # Endpoint: Thêm người dùng mới
 @app.post("/add_user")
 def add_user(user: User):
-    if any(u['userId'] == user.user_id for u in users):
+    global users
+    if any(u['userId'] == user.userId for u in users):
+        logger.error(f"User {user.userId} already exists")
         raise HTTPException(status_code=400, detail="User already exists")
     users.append(user.dict())
+
+    logger.info(f"User {user.userId} added successfully")
+    logger.info(f"Current numbers of users: {len(users)}")
+    
     return {"message": "User added successfully"}
 
 # Endpoint: Thêm đánh giá
 @app.post("/add_rating/")
 def add_rating(rating: Rating):
+    global ratings
     # Kiểm tra user_id có trong danh sách users không
-    if not any(u['userId'] == rating.user_id for u in users):
+    if not any(u['userId'] == rating.userId for u in users):
         raise HTTPException(status_code=400, detail="Invalid user ID")
     
     # Kiểm tra tmdb_id có trong danh sách movies không
-    if not any(m['tmdbId'] == rating.tmdb_id for m in movies):
+    if not any(m['tmdbId'] == rating.tmdbId for m in movies):
         raise HTTPException(status_code=400, detail="Invalid movie ID")
     
     # Thêm rating mới vào danh sách ratings
     ratings.append(rating.dict())
+    logger.info(f"Current numbers of ratings: {len(ratings)}")
 
     get_recommendations(ratings, algorithms)
 
     return {"message": "Rating added successfully"}
 
-@app.get("/recommendations/{user_id}/{algorithm}")
-async def recommend_movies(user_id: str, algorithm: str):
+@app.get("/recommendations/{userId}/{algorithm}")
+async def recommend_movies(userId: str, algorithm: str):
     # Kiểm tra xem thuật toán có tồn tại trong recommendations không
     if algorithm not in recommendations:
         raise HTTPException(status_code=404, detail=f"Algorithm '{algorithm}' not found.")
@@ -133,12 +144,11 @@ async def recommend_movies(user_id: str, algorithm: str):
     # Lấy danh sách gợi ý của thuật toán
     user_recommendations = recommendations[algorithm]
 
-    # Kiểm tra nếu user_id có trong gợi ý
-    if user_id not in user_recommendations:
-        raise HTTPException(status_code=404, detail=f"No recommendations found for user_id '{user_id}'.")
+    # Kiểm tra nếu userId có trong gợi ý
+    if userId not in user_recommendations:
+        raise HTTPException(status_code=404, detail=f"No recommendations found for userId '{userId}'.")
 
-    return user_recommendations[user_id]
-
+    return user_recommendations[userId]
 
 
 # Chạy server
