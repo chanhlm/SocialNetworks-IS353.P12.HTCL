@@ -143,7 +143,7 @@ if st.session_state["show_rating_form"]:
 
 
 
-selected_algo = st.sidebar.selectbox("Thuật toán:", ["Girvan Newman", "Louvain"])
+selected_algo = st.sidebar.selectbox("Thuật toán:", ["Girvan Newman", "Louvain", "Predicted Links", "Information Diffusion (IC)"])
 
 # Display movie
 def display_movie(recommendations):
@@ -235,27 +235,25 @@ def display_movie(recommendations):
         for col, movie in zip(cols, row):
             with col:
                 st.markdown(f"""
-                    <div class="movie-card">
-                        <div class="image-container">
-                            <img src="{movie['poster']}" alt="{movie['title']}">
+                    <a href="https://www.themoviedb.org/movie/{movie['tmdbId']}" target="_blank" style="text-decoration: none; color: inherit;" title="{movie['title']}">
+                        <div class="movie-card">
+                            <div class="image-container">
+                                <img src="{movie['poster']}" alt="{movie['title']}">
+                            </div>
+                            <div class="movie-info">
+                                <p class="movie-title">{movie['title']}</p>
+                                <p class="release-date">{movie['date_published']}</p>
+                            </div>
+                            <!--<div class="rating-badge">59%</div> -->
                         </div>
-                        <div class="movie-info">
-                            <p class="movie-title">{movie['title']}</h3>
-                            <p class="release-date">{movie['date_published']}</p>
-                        </div>
-                        <!--<div class="rating-badge">59%</div> -->
-                    </div>
-
-                    
-
+                    </a>
                 """, unsafe_allow_html=True)
 
-
-
 algothims = {
-    "Frequency": "frequency",
     "Girvan Newman": "girvan_newman",
-    "Louvain": "louvain"
+    "Louvain": "louvain",
+    "Predicted Links": "predict_links",
+    "Information Diffusion (IC)": "information_diffusion_ic"
 }
 
 # Display recommendations
@@ -264,8 +262,7 @@ if selected_user and selected_algo:
     recommendations = fetch_recommendations(selected_user, algo)
 
     if recommendations:
-        st.write(f"Recommended Movies for User {selected_user} using {selected_algo} algorithm")
+        st.markdown(f"### :green[Recommended Movies for user {selected_user} using {selected_algo} algorithm]")
         display_movie(recommendations)
     else:
-        st.write("No recommendations available.")
-    
+        st.markdown("# :red[No recommendations available.!!]")

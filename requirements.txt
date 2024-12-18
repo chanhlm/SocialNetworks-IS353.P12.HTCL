@@ -10,3 +10,5 @@ fastapi
 pydantic
 python-louvain
 community
+scipy
+uvicorn

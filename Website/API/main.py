@@ -20,6 +20,8 @@ recommendations = {}
 algorithms = {
     'girvan_newman': cr.girvan_newman,
     'louvain': cr.louvain,
+    'predict_links': cr.predict_links,
+    'information_diffusion_ic': cr.information_diffusion_ic,
 }
 
 def load_data():
@@ -31,7 +33,7 @@ def load_data():
     global movies, users, ratings
 
     # Dữ liệu movies, users, ratings
-    movies_df = df[['tmdbId', 'title', 'poster', 'date_published', 'homepage']].drop_duplicates()
+    movies_df = df[['tmdbId', 'title', 'poster', 'date_published']].drop_duplicates()
     movies = movies_df.to_dict(orient='records')
     
     users_df = df[['userId']].drop_duplicates()
