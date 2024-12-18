@@ -39,7 +39,7 @@ The dataset includes the main attributes: `userId` and `tmdbId` (Movie ID), used
 
 ## SETUP
 ### 1. Để chạy file SocialNetworkSource.ipynb: 
-Mở terminal trong folder chứ `requirements.txt` để chạy lệnh cài đặt thư viện: 
+Mở terminal trong folder chứa `requirements.txt` để chạy lệnh cài đặt thư viện: 
   ```
   pip install -r requirements.txt
   ```
