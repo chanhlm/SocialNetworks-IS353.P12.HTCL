@@ -38,23 +38,22 @@ The dataset includes the main attributes: `userId` and `tmdbId` (Movie ID), used
 
 
 ## SETUP
-### 1. Để chạy file SocialNetworkSource.ipynb: 
-Mở terminal trong folder chứa `requirements.txt` để chạy lệnh cài đặt thư viện: 
-  ```
-  pip install -r requirements.txt
-  ```
-### 2. Để chạy Website:
-#### Website gợi ý phim
+### 1. To run the `SocialNetworkSource.ipynb` file:
+Open the terminal in the folder containing `requirements.txt` and run the following command to install the required libraries:
 
-Dự án này liên quan đến một website gợi ý phim sử dụng thuật toán khám phá cộng đồng, dự đoán liên kết và lan truyền thông tin trong mạng xã hội. Website này được xây dựng bằng Python sử dụng Streamlit và FastAPI.
+### 2. To run the Website:
+#### Movie Recommendation Website
 
-#### Hướng dẫn thiết lập
-Để khởi động API và giao diện web cùng lúc, thực hiện lệnh terminar ở thư mục `./Website`
+This project involves a movie recommendation website that uses community detection algorithms, link prediction, and information propagation in social networks. The website is built using Python with Streamlit and FastAPI.
+
+#### Setup Instructions
+To start the API and the web interface simultaneously, execute the following command in the terminal within the `./Website` directory:
 ```bash
 py run.py
 ```
-Sau đó, truy cập vào địa chỉ http://localhost:8501/ để sử dụng ứng dụng web.
-API sẽ được chạy ở địa chỉ http://127.0.0.1:8000/docs.
+Then, access the web application at http://localhost:8501/.
+The API will be available at http://127.0.0.1:8000/docs.
+
 
 
 
