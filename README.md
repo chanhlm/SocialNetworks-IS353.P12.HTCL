@@ -1,9 +1,9 @@
 # IS353.P12.HTCL - Social Network
 
 ## Course Information
-**Course**: IS353.P12.HTCL - Social Network
-**Lecturer**: MSc. Thao Bao Tran
-**Semester**: 1, 2024-2025  
+- **Course**: IS353.P12.HTCL - Social Network
+- **Lecturer**: MSc. Thao Bao Tran
+- **Semester**: 1, 2024-2025  
 
 ## Team Information
 | No. | Student ID | Full Name           |
@@ -34,7 +34,8 @@ The dataset includes the main attributes: `userId` and `tmdbId` (Movie ID), used
   - Generate a list of recommended movies for affected users based on the diffusion results.  
 
 ## Technology: 
-**Python**: NetworkX, Pandas, Numpy, Scikit-learn, Matplotlib, Seaborn, Streamlit, FastAPI, Python-louvain, Community
+- ipynb: NetworkX, Pandas, Numpy, Scikit-learn, Matplotlib, Seaborn, Python-louvain, Community
+- Website: Streamlit, FastAPI (Python)
 
 
 ## SETUP
