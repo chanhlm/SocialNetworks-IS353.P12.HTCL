@@ -14,8 +14,8 @@
 | 4   | 21521882   | Le Minh Chanh       |
 
 ## Project Information
-**Project Title**: `MOVIE RECOMMENDATION SYSTEM SOCIAL NETWORK DESIGN`
-**Dataset**: [MovieLens32M](https://grouplens.org/datasets/movielens/32m/) and [Movie Data from TMDB API](https://developer.themoviedb.org/docs/getting-started)
+- **Project Title**: `MOVIE RECOMMENDATION SYSTEM SOCIAL NETWORK DESIGN`
+- **Dataset**: [MovieLens32M](https://grouplens.org/datasets/movielens/32m/) and [Movie Data from TMDB API](https://developer.themoviedb.org/docs/getting-started)
 
 ## Overview dataset
 The dataset includes the main attributes: `userId` and `tmdbId` (Movie ID), used to record user ratings for movies. The dataset is a filtered version of the original dataset, consisting of `5,345 rows and 5 attributes`. These attributes will be used in the process of developing algorithms in social networks, recommending movies to users, and building a website.
