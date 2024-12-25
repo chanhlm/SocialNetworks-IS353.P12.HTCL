@@ -2,7 +2,7 @@
 
 ## Course Information
 - **Course**: IS353.P12.HTCL - Social Network
-- **Lecturer**: MSc. Thao Bao Tran
+- **Lecturer**: MSc. Thai Bao Tran
 - **Semester**: 1, 2024-2025  
 
 ## Team Information
