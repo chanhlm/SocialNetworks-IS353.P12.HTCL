@@ -40,7 +40,9 @@ The dataset includes the main attributes: `userId` and `tmdbId` (Movie ID), used
 ## SETUP
 ### 1. To run the `SocialNetworkSource.ipynb` file:
 Open the terminal in the folder containing `requirements.txt` and run the following command to install the required libraries:
-
+```bash
+pip install -r requirements.txt
+```
 ### 2. To run the Website:
 #### Movie Recommendation Website
 
